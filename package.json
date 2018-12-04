@@ -42,8 +42,8 @@
     "reselect": "^4.0.0"
   },
   "peerDependencies": {
-    "@bpanel/bpanel-ui": "*",
-    "@bpanel/bpanel-utils": "*",
-    "react": "^16.3.0"
+    "@bpanel/bpanel-ui": "^0.0.15",
+    "@bpanel/bpanel-utils": "^0.1.4",
+    "react": "^16.6.3"
   }
 }
