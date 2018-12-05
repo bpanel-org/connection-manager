@@ -59,7 +59,6 @@ function getConfigFromOptions(options) {
  * @param {string} id - id of client to retrieve
  * @returns {bcfg.Config} - bcfg object of config
  */
-
 function getConfig(id) {
   assert(typeof id === 'string', 'Client config must have an id');
 
@@ -134,7 +133,6 @@ async function createClientConfig(id, options = {}, logger) {
  * @param {string} id
  * @returns {bool} - returns true when operation completed successfully
  */
-
 function deleteConfig(id, logger) {
   assert(typeof id === 'string', 'Expected to get id of config to delete');
   try {
