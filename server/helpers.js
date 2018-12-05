@@ -35,7 +35,7 @@ function loadConfig(name, options = {}) {
     arg: true,
   });
 
-  return config;
+  return config
 }
 
 /*
