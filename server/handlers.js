@@ -58,7 +58,7 @@ It is recommended to test the config before adding or updating it`);
     assert(typeof force === 'boolean', 'The force argument must be a bool.');
     if (!healthy && forceBool) {
       logger.warning(
-        'Configs for client "%s" not healthy:',
+        'Configs for client "%s" not healthy: %s',
         id,
         errors.message
       );
