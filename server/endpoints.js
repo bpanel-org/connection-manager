@@ -1,49 +1,34 @@
 const {
-  // getClientInfo,
-  // getDefaultClientInfo,
-  // clientsHandler,
-  getConfigHandler,
   addConfigHandler,
-  updateConfigHandler,
   deleteConfigHandler,
-} = require('../handlers/clients');
+  updateConfigHandler,
+  queryHealthHandler,
+} = require('./handlers');
 
-const base = '/clients';
+const base = '/clients/:id';
 
-module.exports = [
-  // {
-  //   method: GET,
-  //   path: base.concat('/'),
-  //   handler: getClientInfo,
-  // },
-  // {
-  //   method: GET,
-  //   path: base.concat('/default'),
-  //   handler: getDefaultClientInfo,
-  // },
-  // {
-  //   method: USE,
-  //   path: base.concat('/:id/:client'),
-  //   handler: clientsHandler,
-  // },
+exports.beforeCoreMiddleware = [
   {
-    method: 'GET',
-    path: base.concat('/:id'),
-    handler: getConfigHandler,
+    method: 'USE',
+    path: base,
+    handler: queryHealthHandler,
   },
+];
+
+exports.afterCoreMiddleware = [
   {
     method: 'POST',
-    path: base.concat('/:id'),
+    path: base,
     handler: addConfigHandler,
   },
   {
     method: 'PUT',
-    path: base.concat('/:id'),
+    path: base,
     handler: updateConfigHandler,
   },
   {
     method: 'DELETE',
-    path: base.concat('/:id'),
+    path: base,
     handler: deleteConfigHandler,
   },
 ];
