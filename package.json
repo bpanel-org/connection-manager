@@ -7,7 +7,7 @@
     "babel": "babel --presets=env,stage-3 lib -d dist",
     "watch": "babel --presets=env,stage-3 lib -d dist --watch",
     "clean": "rm -f ./dist/*.js",
-    "lint": "eslint lib/ test/ || exit 0",
+    "lint": "eslint server/ lib/ test/",
     "prepublish": "make babel",
     "test": "bmocha --reporter spec test"
   },
