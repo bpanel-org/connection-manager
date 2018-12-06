@@ -84,8 +84,7 @@ function getConfig(id) {
  * Note: This will actually create the file in your bpanel prefix location
  * @param {string} id - id for the client
  * @param {Object} options object for a bcoin/hsd client
- * @param {bool} force - whether or not to force config creation if client
- * can't connect
+ * @param {Logger} logger - blgr instance
  * @returns {bcfg.Config}
  */
 async function createClientConfig(id, options = {}, logger) {
