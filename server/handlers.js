@@ -1,59 +1,12 @@
-const { configHelpers } = require('../utils');
-const {
-  createClientConfig,
-  testConfigOptions,
-  deleteConfig,
-  getConfig,
-} = configHelpers;
+const assert = require('bsert');
+const helpers = require('./helpers');
+const { createClientConfig, deleteConfig, getLogger } = helpers;
 
-async function getConfigHandler(req, res) {
-  const { logger } = req;
-  let configurations;
-  try {
-    configurations = await getConfig(req.params.id);
-  } catch (e) {
-    logger.error(e);
-    if (e.code === 'ENOENT')
-      return res.status(404).json({
-        error: {
-          message: `Config for '${req.params.id}' not found`,
-          code: 404,
-        },
-      });
-    else
-      return res.status(500).json({
-        error: {
-          message: `There was a problem with your request.`,
-          code: 500,
-        },
-      });
-  }
-
-  const info = {
-    configs: configurations.data,
-  };
-
-  if (req.query.health) {
-    try {
-      logger.info(`Checking status of client "${req.params.id}"...`);
-      const [err, clientErrors] = await testConfigOptions(configurations);
-      if (!err) info.healthy = true;
-      else {
-        info.failed = clientErrors.failed;
-        info.healthy = false;
-      }
-    } catch (e) {
-      return res.status(500).send(e);
-    }
-  }
-
-  // scrub apiKeys and tokens
-  for (let key in configurations.data) {
-    if (key.includes('api') || key.includes('token'))
-      configurations.data[key] = undefined;
-  }
-
-  res.status(200).json(info);
+// middleware to add health query to all
+// POST and PUT requests for a specific client
+function queryHealthHandler(req, res, next) {
+  if (req.method === 'PUT' || req.method === 'POST') req.query.health = true;
+  next();
 }
 
 function addConfigHandler(req, res) {
@@ -73,7 +26,8 @@ function updateConfigHandler(req, res) {
 }
 
 function deleteConfigHandler(req, res) {
-  const error = deleteConfig(req.params.id);
+  const logger = getLogger(req);
+  const error = deleteConfig(req.params.id, logger);
   if (!error) return res.status(200).json({ success: true });
   else if (error.code === 'ENOENT')
     return res.status(404).json({
@@ -83,8 +37,9 @@ function deleteConfigHandler(req, res) {
 }
 
 async function updateOrAdd(req, res) {
-  const { logger } = req;
-  const id = req.params.id;
+  const logger = getLogger(req);
+  const { clientHealth, params } = req;
+  const { id } = params;
   try {
     const { options, force = false } = req.body;
 
@@ -92,9 +47,27 @@ async function updateOrAdd(req, res) {
     let forceBool = force;
     if (forceBool === 'true' || forceBool === true) forceBool = true;
     else if (forceBool === 'false' || forceBool === false) forceBool = false;
-    else logger.warn('Expected either "true" or "false" for the force option');
+    else
+      logger.warning('Expected either "true" or "false" for the force option');
 
-    const config = await createClientConfig(id, options, forceBool);
+    if (!clientHealth)
+      logger.debug(`Didn't receive a client health property on the request object. \
+It is recommended to test the config before adding or updating it`);
+
+    const { healthy, errors } = clientHealth;
+    assert(typeof force === 'boolean', 'The force argument must be a bool.');
+    if (!healthy && forceBool) {
+      logger.warning(
+        'Configs for client "%s" not healthy: %s',
+        id,
+        errors.message
+      );
+      logger.warning('Creating config file anyway...');
+    } else if (!healthy) {
+      return res.status(200).send({ message: errors.message, ...errors });
+    }
+
+    const config = await createClientConfig(id, options, logger);
     return res.status(200).send({
       configs: config.options,
     });
@@ -107,8 +80,8 @@ async function updateOrAdd(req, res) {
 }
 
 module.exports = {
-  getConfigHandler,
   addConfigHandler,
-  updateConfigHandler,
   deleteConfigHandler,
+  updateConfigHandler,
+  queryHealthHandler,
 };

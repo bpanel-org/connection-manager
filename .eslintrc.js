@@ -8,7 +8,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['webapp/**/*.js'],
+      files: ['lib/**/*.js'],
       env: {
         node: false,
         browser: true,
@@ -19,7 +19,7 @@ module.exports = {
       }
     },
     {
-      files: ['webapp/tests/**/*.js'],
+      files: ['test/*.js'],
       env: {
         mocha: true
       }
