@@ -1,6 +1,6 @@
 {
   "name": "@bpanel/connection-manager",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Manage different node connections that your bPanel server can communicate with.",
   "main": "dist/index.js",
   "scripts": {
