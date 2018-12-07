@@ -114,7 +114,7 @@ async function createClientConfig(id, options = {}, logger) {
       .replace('_', '')
       .toLowerCase();
 
-    const text = `${configKey}: ${clientConfig.options[key]}\n`;
+    const text = `${configKey}: ${JSON.stringify(clientConfig.options[key])}\n`;
     configTxt = configTxt.concat(text);
   }
   if (!fs.existsSync(clientsPath)) {
