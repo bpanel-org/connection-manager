@@ -31,9 +31,13 @@ function loadConfig(name, options = {}) {
 
   config.load({
     env: true,
-    argv: true,
-    arg: true,
   });
+
+  if (name === 'bpanel') {
+    config.load({
+      argv: true,
+    });
+  }
 
   return config;
 }
@@ -43,9 +47,11 @@ function loadConfig(name, options = {}) {
  * @param {Object|Config} options
  * @returns {Config}
  */
-function getConfigFromOptions(options) {
+function getConfigFromOptions(_options) {
+  let options = _options;
   if (!(options instanceof Config)) options = loadConfig(options.id, options);
   assert(options.str('id'), 'must pass an id to test config options');
+
   // making a copy from options and data properties
   // to avoid any mutations
   return loadConfig(options.str('id'), {
@@ -90,13 +96,12 @@ function getConfig(id) {
 async function createClientConfig(id, options = {}, logger) {
   assert(typeof id === 'string', 'Must pass an id as first paramater');
   assert(logger, 'Expected logger to be passed');
-
   let clientConfig = options;
-  if (!(options instanceof Config))
-    clientConfig = getConfigFromOptions({ id, ...options });
 
   const appConfig = loadConfig('bpanel', options);
   const clientsDir = appConfig.str('clients-dir', 'clients');
+
+  clientConfig = getConfigFromOptions({ id, ...options });
 
   // get full path to client configs relative to the project
   // prefix which defaults to `~/.bpanel`
@@ -108,7 +113,8 @@ async function createClientConfig(id, options = {}, logger) {
       .replace('-', '')
       .replace('_', '')
       .toLowerCase();
-    const text = `${configKey}: ${clientConfig.options[key]}\n`;
+
+    const text = `${configKey}: ${JSON.stringify(clientConfig.options[key])}\n`;
     configTxt = configTxt.concat(text);
   }
   if (!fs.existsSync(clientsPath)) {

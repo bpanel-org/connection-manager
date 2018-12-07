@@ -1,6 +1,6 @@
 const assert = require('bsert');
 const helpers = require('./helpers');
-const { createClientConfig, deleteConfig, getLogger } = helpers;
+const { createClientConfig, deleteConfig, getLogger, getConfig } = helpers;
 
 // middleware to add health query to all
 // POST and PUT requests for a specific client
@@ -22,6 +22,13 @@ function addConfigHandler(req, res) {
 }
 
 function updateConfigHandler(req, res) {
+  const id = req.params.id;
+  const { options } = req.body;
+  // get original configs to merge any missing items if updating
+  // useful for fields like api key that are sent to client
+  const { data } = getConfig(id);
+  const configOptions = { ...data, ...options };
+  req.configOptions = configOptions;
   return updateOrAdd(req, res);
 }
 
@@ -38,10 +45,18 @@ function deleteConfigHandler(req, res) {
 
 async function updateOrAdd(req, res) {
   const logger = getLogger(req);
-  const { clientHealth, params } = req;
+  const { clientHealth, params, configOptions } = req;
   const { id } = params;
   try {
     const { options, force = false } = req.body;
+
+    const opts = configOptions || options;
+
+    // remove any configs with empty strings
+    for (let key in opts) {
+      if (typeof opts[key] === 'string' && !opts[key].length)
+        opts[key] = undefined;
+    }
 
     // coercing force to a boolean
     let forceBool = force;
@@ -67,7 +82,7 @@ It is recommended to test the config before adding or updating it`);
       return res.status(200).send({ message: errors.message, ...errors });
     }
 
-    const config = await createClientConfig(id, options, logger);
+    const config = await createClientConfig(id, opts, logger);
     return res.status(200).send({
       configs: config.options,
     });
