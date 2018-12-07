@@ -1,5 +1,5 @@
 const fs = require('bfile');
-const { resolve, join } = require('path');
+const { resolve } = require('path');
 const assert = require('bsert');
 const Config = require('bcfg');
 
@@ -113,6 +113,7 @@ async function createClientConfig(id, options = {}, logger) {
       .replace('-', '')
       .replace('_', '')
       .toLowerCase();
+
     const text = `${configKey}: ${clientConfig.options[key]}\n`;
     configTxt = configTxt.concat(text);
   }

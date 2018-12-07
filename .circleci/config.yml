@@ -19,7 +19,7 @@ jobs:
 
       - run:
           name: install npm deps
-          command: npm install
+          command: npm install --dev
       - save_cache:
           paths:
             - node_modules
