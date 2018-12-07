@@ -1,6 +1,6 @@
 {
   "name": "@bpanel/connection-manager",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Manage different node connections that your bPanel server can communicate with.",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "clean": "rm -f ./dist/*.js",
     "lint": "eslint server/ lib/ test/",
     "prepublish": "make babel",
-    "test": "bmocha --reporter spec test"
+    "test": "mocha --reporter spec test"
   },
   "keywords": [
     "bpanel",
@@ -35,7 +35,6 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
     "blgr": "^0.1.4",
-    "bmocha": "bcoin-org/bmocha.git",
     "eslint": "^4.9.0",
     "eslint-config-prettier": "^2.6.0",
     "eslint-import-resolver-webpack": "^0.8.3",
@@ -43,6 +42,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^7.4.0",
+    "mocha": "5.2.0",
     "prettier": "^1.11.1",
     "reselect": "^4.0.0"
   },
