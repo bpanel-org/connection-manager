@@ -98,6 +98,6 @@ const clientsDirPath = resolve(BPANEL_PREFIX, BPANEL_CLIENTS_DIR);
       });
     });
   });
-
-  if (code !== 0) process.exit(code);
+  process.exit(code);
+  // if (code !== 0) process.exit(code);
 })();
