@@ -58,7 +58,7 @@ describe('configHelpers', () => {
     it('should accept options object or a bcfg object', async () => {
       await createClientConfig(id, options, logger);
       config.inject(options);
-      await createClientConfig(id, config, logger);
+      await createClientConfig(`${id}-2`, config, logger);
     });
 
     it('should create new config file in clients directory with correct configs', async () => {
