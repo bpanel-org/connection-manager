@@ -56,6 +56,7 @@ describe('configHelpers', () => {
 
   describe('createClientConfig', () => {
     it('should accept options object or a bcfg object', async () => {
+      assert(false, 'This failed!');
       await createClientConfig(id, options, logger);
       config.inject(options);
       await createClientConfig(id, config, logger);
