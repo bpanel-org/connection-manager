@@ -56,6 +56,37 @@ jobs:
           name: run tests
           command: npm run test
 
+  test2:
+    docker:
+      - image: node:10.9.0
+
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: install os deps
+          command: |
+            apt-get update
+            apt-get install -y libudev-dev apt-utils libusb-1.0-0-dev \
+              libssl-dev build-essential
+
+      - run:
+          name: install npm deps
+          command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: run tests
+          command: npm run test:bmocha
+
   lint:
     docker:
         - image: node:10.9.0
@@ -88,5 +119,8 @@ workflows:
           requires:
             - install
       - test:
+          requires:
+            - install
+      - test2:
           requires:
             - install

@@ -9,7 +9,8 @@
     "clean": "rm -f ./dist/*.js",
     "lint": "eslint server/ lib/ test/",
     "prepublish": "make babel",
-    "test": "bmocha --reporter spec test"
+    "test": "bmocha --reporter spec test",
+    "test:bmocha": "node test/helpers-test.js"
   },
   "keywords": [
     "bpanel",
