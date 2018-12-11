@@ -9,7 +9,7 @@
     "clean": "rm -f ./dist/*.js",
     "lint": "eslint server/ lib/ test/",
     "prepublish": "make babel",
-    "test": "mocha --reporter spec test"
+    "test": "bmocha --reporter spec test"
   },
   "keywords": [
     "bpanel",
@@ -35,6 +35,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
     "blgr": "^0.1.4",
+    "bmocha": "^0.1.5",
     "eslint": "^4.9.0",
     "eslint-config-prettier": "^2.6.0",
     "eslint-import-resolver-webpack": "^0.8.3",
@@ -42,7 +43,6 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^7.4.0",
-    "mocha": "5.2.0",
     "prettier": "^1.11.1",
     "reselect": "^4.0.0"
   },

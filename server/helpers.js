@@ -101,7 +101,8 @@ async function createClientConfig(id, options = {}, logger) {
   const appConfig = loadConfig('bpanel', options);
   const clientsDir = appConfig.str('clients-dir', 'clients');
 
-  clientConfig = getConfigFromOptions({ id, ...options });
+  if (!(options instanceof Config))
+    clientConfig = getConfigFromOptions({ id, ...options });
 
   // get full path to client configs relative to the project
   // prefix which defaults to `~/.bpanel`
@@ -109,13 +110,24 @@ async function createClientConfig(id, options = {}, logger) {
 
   let configTxt = '';
   for (let key in clientConfig.options) {
+    // without this try catch the template literal below
+    // will fail. This basically insures we only add stringifiable
+    // primitives
+    try {
+      clientConfig.options[key].toString();
+    } catch (e) {
+      logger.debug('Item at key "%s" is not a string', key);
+      continue;
+    }
+
     const configKey = key
       .replace('-', '')
       .replace('_', '')
       .toLowerCase();
-
-    const text = `${configKey}: ${JSON.stringify(clientConfig.options[key])}\n`;
-    configTxt = configTxt.concat(text);
+    if (key !== 'alias' && key !== 'options') {
+      const text = `${configKey}: ${clientConfig.options[key]}\n`;
+      configTxt = configTxt.concat(text);
+    }
   }
   if (!fs.existsSync(clientsPath)) {
     logger.warning(
